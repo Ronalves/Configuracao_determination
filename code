@@ -1,0 +1,26 @@
+TRY.
+            ls_msg-msgid = 'ZTM'.
+            ls_msg-msgno = 001.
+            ls_msg-msgty = /bobf/if_frw_c=>sc_change_failed_only.
+            ls_msg-msgv1 = 'Flete/Venta no superada, hay demandas que esperan al siguiente día hábil.'.
+
+            IF eo_message IS INITIAL.
+              eo_message = /bobf/cl_frw_factory=>get_message( ).
+            ENDIF.
+
+            eo_message->add_message(
+               EXPORTING
+                 is_msg       = ls_msg
+                 iv_node      = is_ctx-node_key
+                 iv_key       = ls_root-key
+                 iv_attribute = 'TOR_ID_TR'
+                     ).
+
+            ls_failed_key-key = ls_root-key.
+            APPEND ls_failed_key TO et_failed_key.
+
+          ENDIF.
+
+        CATCH cx_root INTO DATA(o_err).
+          DATA(lv_msg) = o_err->get_text( ).
+      ENDTRY.
